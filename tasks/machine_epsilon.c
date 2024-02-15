@@ -50,14 +50,35 @@ MACHINE_EPSILON(double);
 
 
 int main(){
-    printf("%u \n", get_epsilon_float());
-    printf("%u \n", get_epsilon_double());
 
-    // printf("%u \n", get_inf_float());
-    // printf("%u", get_inf_double());
+    // x_norm = (-1)^s * (1 + M/2^n) * 2^(E + 1 - 2^(w-1))
+    // x_subnorm = (-1)^s * (0 + M/2^n) * 2^(2 - 2^(w-1))
 
-    // printf("%u \n", get_zero_float());
-    // printf("%u", get_zero_double());
+    // for float
+    // 1 <= E <= 2^w - 2 - exp 
+    // E = 8 bit
+    // M - 23 bit
+    // bias = 1-2^(w-1) = 127  - 0x01111111
+    
+    // for double
+    // E = 11 bit
+    // M = 52 bit
+    // bias = 1023 bit
+    
+    printf("%u epsilon for float\n", get_epsilon_float());
+    printf("%u epsilon for double\n\n", get_epsilon_double());
+
+    printf("%u %f inf for float\n", get_inf_float(), log2(get_inf_float()));
+    printf("%u %f inf for double\n\n", get_inf_double(), log2(get_inf_double()));
+    // 0x 7f7f ffff (max norm for f) = 2 ^ 127
+    // 0x 7fef ffff ffff ffff (max norm for d) =  (1 + (1 – 2^–52))×2^1023
+
+
+    printf("%u %f zero for float\n", get_zero_float(), log2(get_zero_float()));
+    printf("%u %f zero for double\n\n", get_zero_double(), log2(get_zero_double()));
+    // 0x 0000 0001 ( min subnorm for f) = 2 ^ -149
+    // 0x 0000 0000 0000 0001 (min subnorm for d) = 2 ^ (–1022–52) 
 
     comparator_float();
+    return 0;
 }
