@@ -10,7 +10,6 @@ from tasks.numerical_solution_of_equations.secant_method import secant_method
 
 class FirstTest(Test):
     def func(self) -> Callable:
-        super()
         return lambda x: math.tan(x) - x
 
     def func_derivative(self) -> Callable:
