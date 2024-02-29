@@ -1,6 +1,6 @@
 from tests.numerical_solution_of_equations_test.Test import Test
 
-DELTA = 10 ** -15
+EPSILON = 10 ** -15
 ITERATIONS = 100
 
 """
@@ -37,7 +37,7 @@ def bisection_method(a: float, b: float, test: Test) -> float | None:
     for _ in range(ITERATIONS):
         pivot = (a + b) / 2
         func_pivot = test.func()(pivot)
-        if abs(func_pivot) < DELTA: return pivot
+        if abs(func_pivot) < EPSILON: return pivot
         if sgn(func_pivot) * sgn(func_a) > 0:
             a = pivot
             func_a = func_pivot

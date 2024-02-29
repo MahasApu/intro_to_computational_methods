@@ -15,8 +15,6 @@ def newton_method(test: Test, approx: float = APPROX) -> float | None:
     for _ in range(ITERATIONS):
         corr_factor = 1 / test.func_derivative()(approx)
         x = iterative_process(corr_factor, test)(approx)
-        if abs(x - approx) < EPSILON:
-            return x
+        if abs(x - approx) < EPSILON: return x
         approx = x
     return None
-

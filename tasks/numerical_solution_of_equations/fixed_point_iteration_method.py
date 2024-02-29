@@ -43,18 +43,14 @@ def get_init_approx(a: float, b: float, test: Test) -> float:
 """
 
 
-# def g(approx: float, corr_factor: float, test: Test) -> float:
-#     return math.atan(approx) + math.pi
-
 def iterative_process(corr_factor: float, test: Test) -> Callable:
     return lambda x: x - corr_factor * test.func()(x)
 
 
-def fixed_point_method(test: Test, approx: float = APPROX):
+def fixed_point_method(test: Test, approx: float = APPROX) -> float | None:
     for _ in range(ITERATIONS):
         corr_factor = 0.1
         x = iterative_process(corr_factor, test)(approx)
-        if abs(x - approx) < EPSILON:
-            return x
+        if abs(x - approx) < EPSILON: return x
         approx = x
     return None
