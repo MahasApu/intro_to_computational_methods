@@ -1,15 +1,14 @@
-from typing import Callable
+from tests.numerical_solution_of_equations_test.Test import Test
 
 DELTA = 10 ** -15
 ITERATIONS = 100
 
 """
 Root isolation interval:
-
 A sufficient condition for the existence of a UNIQUE root equation f (x) = 0 on the interval [a, b]:
-1. f (x) is continuous on [a, b]
-2. f (a) f (b) < 0
-3. f'(x) retains a certain sign throughout the entire interval, i.e. f (x) - monotonic.
+    1. f (x) is continuous on [a, b]
+    2. f (a) f (b) < 0
+    3. f'(x) retains a certain sign throughout the entire interval, i.e. f (x) - monotonic.
 """
 
 
@@ -22,13 +21,13 @@ def sgn(value: float) -> int:
         return -1
 
 
-def bisection_method(a: float, b: float, func: Callable) -> float | None:
+def bisection_method(a: float, b: float, test: Test) -> float | None:
     if a > b:
         a, b = b, a
 
     global func_a, func_b
-    func_a = func(a)
-    func_b = func(b)
+    func_a = test.func()(a)
+    func_b = test.func()(b)
 
     if func_a == 0: return a
     if func_b == 0: return b
@@ -37,7 +36,7 @@ def bisection_method(a: float, b: float, func: Callable) -> float | None:
 
     for _ in range(ITERATIONS):
         pivot = (a + b) / 2
-        func_pivot = func(pivot)
+        func_pivot = test.func()(pivot)
         if abs(func_pivot) < DELTA: return pivot
         if sgn(func_pivot) * sgn(func_a) > 0:
             a = pivot
@@ -46,8 +45,3 @@ def bisection_method(a: float, b: float, func: Callable) -> float | None:
             b = pivot
             func_b = func_pivot
     return None
-
-
-if __name__ == "__main__":
-    func = lambda x: x ** 2 - 4
-    print(bisection_method(0, 3, func))
