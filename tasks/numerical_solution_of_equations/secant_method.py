@@ -2,8 +2,7 @@ from typing import Callable
 
 from tests.numerical_solution_of_equations_test.Test import Test
 
-APPROX = 0.1
-EPSILON = 10 ** -7
+EPSILON = 10 ** -6
 ITERATIONS = 100
 
 
@@ -15,11 +14,12 @@ def secant(test: Test) -> Callable:
     return lambda x, y: (test.func()(x) - test.func()(y)) / (x - y)
 
 
-def secant_method(x_0: float, x_1: float, test: Test) -> float | None:
+def secant_method(x_0: float, x_1: float, test: Test) -> (float | None, int):
+    iter_amount = 0
     for _ in range(ITERATIONS):
-        corr_factor = 1 / secant(test)(x_1, x_0)
-        x = iterative_process(corr_factor, test)(x_1)
-        if abs(x - x_1) < EPSILON: return x
+        iter_amount += 1
+        x = x_1 - test.func()(x_1) * ((x_1 - x_0))/(test.func()(x_1) - test.func()(x_0))
+        if abs(x - x_1) < EPSILON: return x, iter_amount
         x_0 = x_1
         x_1 = x
-    return None
+    return None, ITERATIONS

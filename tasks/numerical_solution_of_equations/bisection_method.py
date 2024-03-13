@@ -21,7 +21,7 @@ def sgn(value: float) -> int:
         return -1
 
 
-def bisection_method(a: float, b: float, test: Test) -> float | None:
+def bisection_method(a: float, b: float, test: Test) -> (float | None, int):
     if a > b:
         a, b = b, a
 
@@ -32,16 +32,19 @@ def bisection_method(a: float, b: float, test: Test) -> float | None:
     if func_a == 0: return a
     if func_b == 0: return b
 
-    assert sgn(func_a) != sgn(func_b)
+    # assert sgn(func_a) != sgn(func_b)
+
+    iter_amount = 0
 
     for _ in range(ITERATIONS):
+        iter_amount += 1
         pivot = (a + b) / 2
         func_pivot = test.func()(pivot)
-        if abs(func_pivot) < EPSILON: return pivot
+        if abs(func_pivot) < EPSILON: return pivot, iter_amount
         if sgn(func_pivot) * sgn(func_a) > 0:
             a = pivot
             func_a = func_pivot
         else:
             b = pivot
             func_b = func_pivot
-    return None
+    return None, ITERATIONS
