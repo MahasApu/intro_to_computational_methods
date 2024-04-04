@@ -1,7 +1,7 @@
-from tests.numerical_solution_of_equations_test.Test import Test
+from tests.numerical_solution_of_equations_test.test_classes import Test
 
-EPSILON = 10 ** -15
-ITERATIONS = 100
+EPSILON = 10 ** -10
+ITERATIONS = 1000
 
 """
 Root isolation interval:
@@ -12,36 +12,23 @@ A sufficient condition for the existence of a UNIQUE root equation f (x) = 0 on 
 """
 
 
-def sgn(value: float) -> int:
-    if value > 0:
-        return 1
-    elif value == 0:
-        return 0
-    else:
-        return -1
-
-
-def bisection_method(a: float, b: float, test: Test) -> (float | None, int):
-    if a > b:
-        a, b = b, a
-
+def bisection_method(root_number: int, test: Test) -> (float | None, int):
+    a, b = test.get_interval(root_number)
     global func_a, func_b
     func_a = test.func()(a)
     func_b = test.func()(b)
 
-    if func_a == 0: return a
-    if func_b == 0: return b
-
-    # assert sgn(func_a) != sgn(func_b)
+    assert func_a * func_b > 0, "Root isolation conflict!"
 
     iter_amount = 0
-
     for _ in range(ITERATIONS):
         iter_amount += 1
         pivot = (a + b) / 2
         func_pivot = test.func()(pivot)
-        if abs(func_pivot) < EPSILON: return pivot, iter_amount
-        if sgn(func_pivot) * sgn(func_a) > 0:
+
+        if abs(a - b) < EPSILON: return pivot, iter_amount
+
+        if func_pivot * func_a > 0:
             a = pivot
             func_a = func_pivot
         else:

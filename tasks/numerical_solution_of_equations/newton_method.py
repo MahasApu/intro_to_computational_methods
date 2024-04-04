@@ -1,17 +1,19 @@
 from typing import Callable
 
-from tests.numerical_solution_of_equations_test.Test import Test
+from tests.numerical_solution_of_equations_test.test_classes import Test
 
-APPROX_COMPLEX = complex(0.1, 0)
-APPROX_REAL = 4.6
-EPSILON = 10 ** -7
-ITERATIONS = 100
+EPSILON = 10 ** -10
+ITERATIONS = 1000
+
+# TODO: define approx values for complex test
 
 def iterative_process(corr_factor: float, test: Test) -> Callable:
     return lambda x: x - corr_factor * test.func()(x)
 
 
-def newton_method(test: Test, approx: float = APPROX_REAL) -> (float | None, int):
+def newton_method(root_number: int, test: Test, approx: complex = None) -> (float | None, int):
+    if not approx:
+        approx = test.get_approx(root_number)
     iter_amount = 0
     for _ in range(ITERATIONS):
         iter_amount += 1
@@ -21,3 +23,4 @@ def newton_method(test: Test, approx: float = APPROX_REAL) -> (float | None, int
         approx = x
 
     return None, ITERATIONS
+

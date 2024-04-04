@@ -1,9 +1,9 @@
 from typing import Callable
 
-from tests.numerical_solution_of_equations_test.Test import Test
+from tests.numerical_solution_of_equations_test.test_classes import Test
 
-EPSILON = 10 ** -6
-ITERATIONS = 100
+EPSILON = 10 ** -10
+ITERATIONS = 1000
 
 
 def iterative_process(corr_factor: float, test: Test) -> Callable:
@@ -14,7 +14,8 @@ def secant(test: Test) -> Callable:
     return lambda x, y: (test.func()(x) - test.func()(y)) / (x - y)
 
 
-def secant_method(x_0: float, x_1: float, test: Test) -> (float | None, int):
+def secant_method(root_number: int, test: Test) -> (float | None, int):
+    x_0, x_1 = test.get_interval(root_number)
     iter_amount = 0
     for _ in range(ITERATIONS):
         iter_amount += 1
