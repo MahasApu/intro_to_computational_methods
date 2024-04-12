@@ -2,6 +2,7 @@ from abc import abstractmethod, ABCMeta
 from typing import Callable
 from math import tan, cos, pi
 
+FACTOR = 0.1
 
 class Test:
     __metaclass__ = ABCMeta
@@ -15,15 +16,14 @@ class Test:
         """ returns derivation of test function"""
 
     @abstractmethod
-    def get_interval(self, root_number) -> tuple[float, float]:
+    def get_interval(self, root_index) -> tuple[float, float]:
         """  returns interval """
 
     @abstractmethod
-    def get_approx(self, root_number: int) -> float:
+    def get_approx(self, root_index: int) -> float:
         """  returns interval """
 
 
-# TODO: make correct intervals and approx values
 class FirstTest(Test):
     def func(self) -> Callable:
         return lambda x: tan(x) - x
@@ -31,21 +31,19 @@ class FirstTest(Test):
     def func_derivative(self) -> Callable:
         return lambda x: (1 / cos(x) ** 2) - 1
 
-    def get_interval(self, root_number: int) -> tuple[float, float]:
-        if root_number == 0:
-            return (-0.5, 0.5)
-        elif root_number > 0:
-            return (pi * root_number + pi / 2 - 0.1, pi * (root_number + 1) + pi / 2)
-        else:
-            return (pi * (root_number - 1) + 0.8, pi * root_number - 0.8)
+    def get_interval(self, root_index: int) -> tuple[float, float]:
+        base = pi * root_index
+        start = -pi / 2 + FACTOR + base
+        end = pi / 2 - FACTOR + base
+        while self.func()(start) * self.func()(end) > 0:
+            start += FACTOR
+            end -= FACTOR
+        return (start, end)
 
-    def get_approx(self, root_number: int) -> float:
-        if root_number == 0:
-            return 0.5
-        elif root_number > 0:
-            return pi * root_number + pi / 2 - 0.1
-        else:
-            return pi * root_number + pi / 2 - 0.1
+    def get_approx(self, root_index: int) -> float:
+        sign = 1 if root_index >= 0 else -1
+        return sign * ((pi / 2 - 0.1) + abs(root_index) * pi)
+
 
 
 class SecondTest(Test):
@@ -54,3 +52,9 @@ class SecondTest(Test):
 
     def func_derivative(self) -> Callable:
         return lambda x: 3 * x ** 2
+
+    def get_interval(self, root_index) -> tuple[float, float]:
+        pass
+
+    def get_approx(self, root_index: int) -> float:
+        pass

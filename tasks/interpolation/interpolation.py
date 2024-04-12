@@ -22,7 +22,7 @@ class Polynomial:
     def chebishev_node(self, a, b, degree):
         return lambda i: 1 / 2 * (b + a) + 1 / 2 * (b - a) * cos(((2 * i + 1) * pi) / (2 * (degree + 1)))
 
-    # возвращает n-й член полинома Лагранжа, построенную с помощью лямбд выше
+    # возвращает n-й член полинома Лагранжа, построенный с помощью лямбд выше
     def lagrange_node(self, x, nodes):
         return lambda x_i, n: (self.func()(x_i) * w(x, n, nodes)) / w(x_i, n, nodes)
 
