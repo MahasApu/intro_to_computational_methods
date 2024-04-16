@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from typing import List
 
-from tests.numerical_solution_of_equations_test.test_classes import Test, SecondTest
+from tests.numerical_solution_of_equations_test.test_classes import Test
 from tasks.numerical_solution_of_equations.newton_method import newton_method
 
 EPSILON = 10 ** -7
@@ -24,10 +24,9 @@ def setup_plot(x, y, points):
     ax.scatter(x, y, c=points)
     ax.grid(True)
     fig.tight_layout()
-    plt.show()
 
 
-def newton_basin(test: Test, roots: List[complex] = None):
+def newton_basin(test: Test, roots: List[complex] = None, start_point: complex = None):
     if roots is None: roots = ROOTS
     x, y, points = [], [], []
     for x_i in range(-HEIGHT, HEIGHT):
@@ -35,4 +34,14 @@ def newton_basin(test: Test, roots: List[complex] = None):
             if x_i == 0 or y_j == 0: continue
             x.append(x_i), y.append(y_j)
             points.append(get_colour_for_point(newton_method(0, test, approx=complex(x_i, y_j))[0], roots))
+
     setup_plot(x, y, points)
+
+    if start_point:
+        points = newton_method(0, test, approx=start_point)[2]
+        colors = np.zeros((HEIGHT, WIDTH, 3))
+        plt.imshow(colors, extent=(-WIDTH, WIDTH, -HEIGHT, HEIGHT))
+        for point in points:
+            plt.scatter(point.real, point.imag)
+
+    plt.show()

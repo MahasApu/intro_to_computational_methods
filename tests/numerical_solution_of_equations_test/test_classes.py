@@ -2,7 +2,8 @@ from abc import abstractmethod, ABCMeta
 from typing import Callable
 from math import tan, cos, pi
 
-FACTOR = 0.1
+FACTOR = 0.01
+
 
 class Test:
     __metaclass__ = ABCMeta
@@ -42,8 +43,7 @@ class FirstTest(Test):
 
     def get_approx(self, root_index: int) -> float:
         sign = 1 if root_index >= 0 else -1
-        return sign * ((pi / 2 - 0.1) + abs(root_index) * pi)
-
+        return sign * ((pi / 2 - FACTOR) + abs(root_index) * pi)
 
 
 class SecondTest(Test):

@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from random import random, randint
 
-from setup_plot import setup_plot
 from test_classes import FirstTest, SecondTest
 from tasks.numerical_solution_of_equations.bisection_method import bisection_method
 from tasks.numerical_solution_of_equations.fixed_point_iteration_method import fixed_point_method
@@ -9,10 +9,10 @@ from tasks.numerical_solution_of_equations.newton_method import newton_method
 from tasks.numerical_solution_of_equations.secant_method import secant_method
 from tasks.numerical_solution_of_equations.newton_complex import newton_basin
 
-
 # flags for tests
 FIRST_TEST = 1
-COMPLEX_TEST = 0
+COMPLEX_TEST = 1
+
 
 def plot_tan(root_num: int):
     fp_x = fixed_point_method(root_num, FirstTest())[0]
@@ -39,17 +39,15 @@ if __name__ == "__main__":
 
     if FIRST_TEST:
         print("-------------- Running 1st test ----------------")
-        for root in range(-5, 5):
+        for root in range(-19, 20):
             print("\nRoot index: ", root)
             print(bisection_method(root_index=root, test=FirstTest()))
             print(fixed_point_method(root_index=root, test=FirstTest()))
             print(newton_method(root_index=root, test=FirstTest()))
             print(secant_method(root_index=root, test=FirstTest()))
 
-        # setup_plot()
-        # plot_tan(root)
-
-
     if COMPLEX_TEST:
         print("------ Complex polynomial with Newton's method --------")
-        newton_basin(SecondTest())
+        start_point = complex(random() * 10, random() * 10)
+        good_start_points = [complex(44, 64), complex(-54, 2), complex(43, -90)]
+        newton_basin(SecondTest(), start_point=good_start_points[randint(0, len(good_start_points) - 1)])
