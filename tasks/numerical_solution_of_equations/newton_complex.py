@@ -8,8 +8,8 @@ from tasks.numerical_solution_of_equations.newton_method import newton_method
 EPSILON = 10 ** -7
 HEIGHT = 100
 WIDTH = 100
-COLOURS = [(1, 1, 0), (0, 1, 1), (1, 0, 0.5)]
-ROOTS = [1, -1 / 2 + 1j * np.sqrt(3) / 2, -1 / 2 - 1j * np.sqrt(3) / 2]
+COLOURS = [(0.5, 0.5, 0), (0, 0.5, 0), (0, 0.5, 0.5)]
+ROOTS = [1 + 0j, -1 / 2 + 1j * np.sqrt(3) / 2, -1 / 2 - 1j * np.sqrt(3) / 2]
 
 
 def get_colour_for_point(point: complex, roots: List[complex]):
@@ -21,7 +21,11 @@ def get_colour_for_point(point: complex, roots: List[complex]):
 
 def setup_plot(x, y, points):
     fig, ax = plt.subplots()
+
     ax.scatter(x, y, c=points)
+    real = [root.real for root in ROOTS]
+    imag = [root.imag for root in ROOTS]
+    ax.scatter(real, imag, s = 100,  c="white")
     ax.grid(True)
     fig.tight_layout()
 
@@ -42,6 +46,6 @@ def newton_basin(test: Test, roots: List[complex] = None, start_point: complex =
         colors = np.zeros((HEIGHT, WIDTH, 3))
         plt.imshow(colors, extent=(-WIDTH, WIDTH, -HEIGHT, HEIGHT))
         for point in points:
-            plt.scatter(point.real, point.imag)
+            plt.scatter(point.real, point.imag, marker='^', c="red")
 
     plt.show()

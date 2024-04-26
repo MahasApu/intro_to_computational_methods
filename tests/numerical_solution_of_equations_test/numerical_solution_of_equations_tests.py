@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     if FIRST_TEST:
         print("-------------- Running 1st test ----------------")
-        for root in range(-19, 20):
+        for root in range(-25, 20):
             print("\nRoot index: ", root)
             print(bisection_method(root_index=root, test=FirstTest()))
             print(fixed_point_method(root_index=root, test=FirstTest()))
@@ -48,6 +48,7 @@ if __name__ == "__main__":
 
     if COMPLEX_TEST:
         print("------ Complex polynomial with Newton's method --------")
-        start_point = complex(random() * 10, random() * 10)
+        start_point = complex(random() * 100, random() * 100)
         good_start_points = [complex(44, 64), complex(-54, 2), complex(43, -90)]
         newton_basin(SecondTest(), start_point=good_start_points[randint(0, len(good_start_points) - 1)])
+        # newton_basin(SecondTest(), start_point=start_point)
