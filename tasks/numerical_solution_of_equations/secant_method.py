@@ -22,7 +22,8 @@ def secant_method(root_index: int, test: Test) -> (float | None, int):
     iter_amount = 0
     for _ in range(ITERATIONS):
         iter_amount += 1
-        x = x_1 - test.func()(x_1) * ((x_1 - x_0))/(test.func()(x_1) - test.func()(x_0))
+        corr_factor = 1 / secant(test)(x_1, x_0)
+        x = iterative_process(corr_factor, test)(x_0)
         if abs(x - x_1) < EPSILON: return x, iter_amount
         x_0 = x_1
         x_1 = x
