@@ -103,7 +103,7 @@ def examples(option: int, h: float):
 
 
 # Функция для отображения максимального отклонения численного решения от точного.
-# Итерация по количеству узлов (с шагом 500).
+# Итерация по количеству узлов (с шагом 100).
 # Граничные условия берутся из функции examples().
 def plot_max_deviation(option: int, bounds: tuple, func: Callable):
     assert option in [1, 2, 3]
