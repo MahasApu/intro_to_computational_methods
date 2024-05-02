@@ -110,9 +110,6 @@ def plot_max_deviation(option: int, bounds: tuple, func: Callable):
 
     l, r = bounds
     STEPS = [100 * x for x in range(1, 10)]
-    deviation = []
-
-    X, Y, Y_exact = [], [], []
 
     for amount in STEPS:
         h = (r - l) / amount
@@ -124,21 +121,20 @@ def plot_max_deviation(option: int, bounds: tuple, func: Callable):
         c1 = m1 + 1
         c2 = m2 - c1 * pi / 2
         Y_exact = [(-cos(x) + c1 * x + c2) for x in X]
-        deviation.append(max([abs(Y[i] - Y_exact[i]) for i in range(len(Y))]))
+        deviation = [abs(Y[i] - Y_exact[i]) for i in range(len(Y))]
 
-    # plot
-    fig, axs = plt.subplots(2, 1, figsize=(5, 6), tight_layout=True)
-    axs[0].grid(True)
-    axs[1].grid(True)
+        # plot
+        fig, axs = plt.subplots(2, 1, figsize=(5, 6), tight_layout=True)
+        axs[0].grid(True)
+        axs[1].grid(True)
 
-    axs[0].plot(X, Y, label="Численное")
-    axs[0].plot(X, Y_exact, label="Точное")
+        axs[0].plot(X, Y, label="Численное")
+        axs[0].plot(X, Y_exact, label="Точное")
+        axs[1].plot(X, deviation, label=f"Отклонение при {amount} узлах")
 
-    axs[1].plot(STEPS, deviation, label="Максимальное отклонение")
-
-    axs[0].legend()
-    axs[1].legend()
-    plt.show()
+        axs[0].legend()
+        axs[1].legend()
+        plt.show()
 
 
 # Функция для построения графиков точного и численного решений.
