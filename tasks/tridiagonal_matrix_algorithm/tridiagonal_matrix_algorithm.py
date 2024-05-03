@@ -91,8 +91,8 @@ def examples(option: int, h: float) -> (List, List, Callable):
     if option == 1:
         return [-1 / h, 1 / h, 3], [0, 1, 4], lambda x: - cos(x) + 4 * x + (4 - 4 * pi / 2)
 
-    # y(-pi/2) = 0.5
-    # y(pi/2) = 5.2
+    # y(-pi/2) = 1
+    # y(pi/2) = 5
     elif option == 2:
         return [1, 0, 1], [0, 1, 5], lambda x: - cos(x) + 4 * x / pi + 3
 
