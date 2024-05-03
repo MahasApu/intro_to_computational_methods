@@ -83,23 +83,23 @@ def get_bounds(h: float) -> (list, list):
     return get_left(), get_right()
 
 
-def examples(option: int, h: float):
+def examples(option: int, h: float) -> (List, List, Callable):
     assert option in [1, 2, 3]
 
     # y'(-pi/2) = 3
     # y(pi/2) = 4
     if option == 1:
-        return [-1 / h, 1 / h, 3], [0, 1, 4]
+        return [-1 / h, 1 / h, 3], [0, 1, 4], lambda x: - cos(x) + 4 * x + (4 - 4 * pi / 2)
 
     # y(-pi/2) = 0.5
     # y(pi/2) = 5.2
     elif option == 2:
-        return [1, 0, 0.5], [0, 1, 5.2]
+        return [1, 0, 1], [0, 1, 5], lambda x: - cos(x) + 4 * x / pi + 3
 
     # y(-pi/2) = -0.8
     # y'(pi/2) = -0.1
     else:
-        return [1, 0, -0.8], [1 / h, -1 / h, -0.1]
+        return [1, 0, -0.8], [1 / h, -1 / h, -0.1], lambda x: -cos(x) + (-0.8 + 1) * x + (-0.1 - (-0.8 + 1) * pi / 2)
 
 
 # Функция для отображения максимального отклонения численного решения от точного.
@@ -113,14 +113,11 @@ def plot_max_deviation(option: int, bounds: tuple, func: Callable):
 
     for amount in STEPS:
         h = (r - l) / amount
-        left, right = examples(option, h)
+        left, right, exact_function = examples(option, h)
         A, B, C, F, X = get_matrices(func, left, right, bounds, amount)
         Y = tridiagonal_method(A, B, C, F)
-        m1 = left[2]
-        m2 = right[2]
-        c1 = m1 + 1
-        c2 = m2 - c1 * pi / 2
-        Y_exact = [(-cos(x) + c1 * x + c2) for x in X]
+
+        Y_exact = [exact_function(x) for x in X]
         deviation = [abs(Y[i] - Y_exact[i]) for i in range(len(Y))]
 
         # plot
@@ -169,6 +166,6 @@ if __name__ == "__main__":
     FUNC = lambda x: cos(x)
 
     # для выбора примера (1, 2, 3)
-    OPTION = 1
+    OPTION = 2
     plot_max_deviation(OPTION, BOUNDS, FUNC)
     # plot_solution_with_set_conditions(BOUNDS, NODES_AMOUNT, FUNC)
