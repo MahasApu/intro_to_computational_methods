@@ -35,18 +35,18 @@ def get_matrices(func: Callable, left: list, right: list, bounds: tuple, nodes_a
     l, r = bounds
     h = (r - l) / nodes_amount
     A: List[float] = [1 / h ** 2 if _ != 0 else 0 for _ in range(0, nodes_amount)]
-    B: List[float] = [-2 / h ** 2 for _ in range(1, nodes_amount)]
-    C: List[float] = [1 / h ** 2 if _ != nodes_amount else 0 for _ in range(1, nodes_amount + 1)]
+    C: List[float] = [-2 / h ** 2 for _ in range(1, nodes_amount)]
+    B: List[float] = [1 / h ** 2 if _ != nodes_amount else 0 for _ in range(1, nodes_amount + 1)]
     X: List[float] = [l + i * h for i in range(1, nodes_amount)]
     F: List[float] = [func(x_i) for x_i in X]
 
     A = A + [right[0]]
-    B = [left[0]] + B + [right[1]]
-    C = [left[1]] + C
+    C = [left[0]] + C + [right[1]]
+    B = [left[1]] + B
     F = [left[2]] + F + [right[2]]
     X = [l] + X + [r]
 
-    return A, B, C, F, X
+    return A, C, B, F, X
 
 
 def get_bounds(h: float) -> (list, list):
@@ -89,7 +89,7 @@ def examples(option: int, h: float) -> (List, List, Callable):
     # y'(-pi/2) = 3
     # y(pi/2) = 4
     if option == 1:
-        return [-1 / h, 1 / h, 3], [0, 1, 4], lambda x: - cos(x) + 4 * x + (4 - 4 * pi / 2)
+        return [-1 / h, 1 / h, 0], [0, 1, 1], lambda x: - cos(x) + x - pi/2 + 1
 
     # y(-pi/2) = 1
     # y(pi/2) = 5
@@ -114,8 +114,8 @@ def plot_max_deviation(option: int, bounds: tuple, func: Callable):
     for amount in STEPS:
         h = (r - l) / amount
         left, right, exact_function = examples(option, h)
-        A, B, C, F, X = get_matrices(func, left, right, bounds, amount)
-        Y = tridiagonal_method(A, B, C, F)
+        A, C, B, F, X = get_matrices(func, left, right, bounds, amount)
+        Y = tridiagonal_method(A, C, B, F)
 
         Y_exact = [exact_function(x) for x in X]
         deviation = [abs(Y[i] - Y_exact[i]) for i in range(len(Y))]
@@ -140,8 +140,8 @@ def plot_solution_with_set_conditions(bounds: tuple, amount: int, func: Callable
     l, r = bounds
     h = (r - l) / amount
     left, right = get_bounds(h)
-    A, B, C, F, X = get_matrices(func, left, right, bounds, amount)
-    Y = tridiagonal_method(A, B, C, F)
+    A, C, B, F, X = get_matrices(func, left, right, bounds, amount)
+    Y = tridiagonal_method(A, C, B, F)
 
     m1 = left[2]
     m2 = right[2]
