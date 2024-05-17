@@ -1,33 +1,52 @@
 import matplotlib.pyplot as plt
 from typing import Callable, List
-from math import exp, pi
+from math import exp, pi, cos, sin, log
 
 
 class ApproximationOrder:
 
     def __init__(self):
-        self.bounders = (0, pi)
+        self.bounders = (0, 3)
         self.amount = 10
-        self.x_0 = 1
+        self.x_0 = 2
 
     def fx(self) -> Callable:
-        return lambda t, x: x
+        return lambda t, x: - 2 * x * t
+
+    def get_approx_plot(self):
+        rk = RungeKuttaMethod()
+
+        # amount = n
+        T_h = rk.get_grid(self.bounders, self.amount)
+        Y_exact_h = [2 * exp(-x ** 2) for x in T_h]
+        X_h = rk.runge_kutta_4th_1d(self.x_0, self.bounders, self.amount, self.fx())
+        deviation_h = [abs(X_h[i] - Y_exact_h[i]) for i in range(self.amount + 1)]
+        max_div_h = max(deviation_h)
+
+        # amount = 2n
+        T_h2 = rk.get_grid(self.bounders, 2 * self.amount)
+        Y_exact_h2 = [2 * exp(-x ** 2) for x in T_h2]
+        X_h2 = rk.runge_kutta_4th_1d(self.x_0, self.bounders, 2 * self.amount, self.fx())
+        deviation_h2 = [abs(X_h2[i] - Y_exact_h2[i]) for i in range(2 * self.amount + 1)]
+        max_div_h2 = max(deviation_h2)
+
+        return "Approximation order: ", log(max_div_h / max_div_h2, 2)
 
     def show(self):
         rk = RungeKuttaMethod()
         T = rk.get_grid(self.bounders, self.amount)
-        EXP = [exp(node) for node in T]
-        print(EXP)
+        Y_exact = [2 * exp(-x ** 2) for x in T]
         X = rk.runge_kutta_4th_1d(self.x_0, self.bounders, self.amount, self.fx())
-        deviation = [abs(X[i] - EXP[i]) for i in range(self.amount + 1)]
+        deviation = [abs(X[i] - Y_exact[i]) for i in range(self.amount + 1)]
 
         fig, axs = plt.subplots(2, 1, figsize=(5, 6), tight_layout=True)
         axs[0].grid(True)
         axs[1].grid(True)
 
         axs[0].plot(T, X, label="Numeric")
-        axs[0].plot(T, EXP, label="Taylor expansion")
+        axs[0].plot(T, Y_exact, label="Taylor expansion")
         axs[1].plot(T, deviation, label=f"Deviation: {self.amount} nodes")
+        axs[1].set_title(self.get_approx_plot())
 
         axs[0].set_xlabel("X")
         axs[0].set_ylabel("Y")
@@ -39,10 +58,10 @@ class ApproximationOrder:
 
 class PredatorPrey:
     def __init__(self):
-        self.bounders = (0, 50)
+        self.bounders = (0, 1)
         self.amount = 100
-        self.x_0 = 100
-        self.y_0 = 20
+        self.x_0 = 0.8
+        self.y_0 = 0.2
 
     def fx(self) -> Callable:
         c1, c2 = 10, 2
@@ -55,26 +74,35 @@ class PredatorPrey:
     def show(self):
         rk = RungeKuttaMethod()
         T = rk.get_grid(self.bounders, self.amount)
-
-        X, Y = rk.runge_kutta_4th_2d(self.x_0, self.y_0, self.bounders, self.amount, self.fx(), self.fy())
         fig, axs = plt.subplots(2, 1, figsize=(5, 6), tight_layout=True)
         axs[0].grid(True)
         axs[1].grid(True)
-        for x in [self.x_0, 2]:
-            for y in [self.y_0, 2]:
+
+        # rand values
+        for x in [self.x_0, 5, 5.6]:
+            for y in [0.1, self.y_0, 7, 5, 10]:
                 X, Y = rk.runge_kutta_4th_2d(x, y, self.bounders, self.amount, self.fx(), self.fy())
-                axs[0].plot(T, X, label="Predators")
-                axs[0].plot(T, Y, label="Preys")
-                axs[1].plot(X, Y, label="Populations")
+                axs[0].plot(T, X)
+                axs[0].plot(T, Y)
+                axs[1].plot(X, Y)
+
+        # точка неустойчивости
+        axs[1].scatter(0, 0)
+        axs[1].annotate("Точка неустойчивости", (0, 0))
+
+        # точка устойчивого типа
+        axs[1].scatter(5, 5)
+        axs[1].annotate("Точка устойчивого типа", (5, 5))
 
         axs[0].set_xlabel("Time")
         axs[0].set_ylabel("Population")
 
-        axs[0].set_xlabel("Predators")
-        axs[0].set_ylabel("Preys")
+        axs[1].set_xlabel("Predators")
+        axs[1].set_ylabel("Preys")
 
         axs[0].legend()
         axs[1].legend()
+        plt.show()
 
 
 class LorenzAttractor:
@@ -110,7 +138,6 @@ class LorenzAttractor:
         ax.set_xlabel("X")
         ax.set_ylabel("Y")
         ax.set_zlabel("Z")
-
         plt.show()
 
 
