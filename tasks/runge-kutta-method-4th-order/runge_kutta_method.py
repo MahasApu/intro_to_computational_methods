@@ -58,7 +58,8 @@ class ApproximationOrder:
 
 class PredatorPrey:
     def __init__(self):
-        self.bounders = (0, 1)
+        # self.bounders = (0, 1) # by default
+        self.bounders = (0, 0.5)  # to disrupt the stability of the system
         self.amount = 100
         self.x_0 = 0.8
         self.y_0 = 0.2
@@ -68,7 +69,8 @@ class PredatorPrey:
         return lambda t, x, y: c1 * x - c2 * x * y
 
     def fy(self) -> Callable:
-        c3, c4 = 2, 10
+        # c3, c4 = 2, 10 # by default
+        c3, c4 = 2, -10  # to disrupt the stability of the system (x2)
         return lambda t, x, y: c3 * x * y - c4 * y
 
     def show(self):
@@ -79,20 +81,20 @@ class PredatorPrey:
         axs[1].grid(True)
 
         # rand values
-        for x in [self.x_0, 5, 5.6]:
-            for y in [0.1, self.y_0, 7, 5, 10]:
+        for x in [self.x_0]:
+            for y in [self.y_0]:
                 X, Y = rk.runge_kutta_4th_2d(x, y, self.bounders, self.amount, self.fx(), self.fy())
                 axs[0].plot(T, X)
                 axs[0].plot(T, Y)
                 axs[1].plot(X, Y)
 
         # точка неустойчивости
-        axs[1].scatter(0, 0)
-        axs[1].annotate("Точка неустойчивости", (0, 0))
+        # axs[1].scatter(0, 0)
+        # axs[1].annotate("Точка неустойчивости", (0, 0))
 
         # точка устойчивого типа
-        axs[1].scatter(5, 5)
-        axs[1].annotate("Точка устойчивого типа", (5, 5))
+        # axs[1].scatter(5, 5)
+        # axs[1].annotate("Точка устойчивого типа", (5, 5))
 
         axs[0].set_xlabel("Time")
         axs[0].set_ylabel("Population")
@@ -109,16 +111,16 @@ class LorenzAttractor:
     def __init__(self):
         self.bounders = (0, 50)
         self.amount = 10000
-        self.x_0 = 1
-        self.y_0 = 0
-        self.z_0 = 1
+        self.x_0 = -1
+        self.y_0 = 1
+        self.z_0 = -1
 
     def fx(self) -> Callable:
         sigma = 10
         return lambda t, x, y, z: sigma * (y - x)
 
     def fy(self) -> Callable:
-        r = 100  # may be random
+        r = 2  # may be random
         return lambda t, x, y, z: x * (r - z) - y
 
     def fz(self) -> Callable:
@@ -234,10 +236,10 @@ class RungeKuttaMethod:
 
 if __name__ == "__main__":
     approx = ApproximationOrder()
-    approx.show()
+    # approx.show()
 
     pp = PredatorPrey()
     pp.show()
 
     la = LorenzAttractor()
-    la.show()
+    # la.show()
